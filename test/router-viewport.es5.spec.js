@@ -650,6 +650,48 @@ describe('ngViewport', function () {
   });
 
 
+  it('should provide the controller initially to ng-init', function () {
+    var ctrl;
+    function Controller () {}
+    Controller.prototype.activate = function () {
+      ctrl = this;
+    };
+    registerComponent('init', '<p ng-init="init.foo = 5"></p>', Controller);
+
+    compile('<ng-viewport></ng-viewport>');
+
+    $router.config([
+      { path: '/', component: 'init' }
+    ]);
+
+    $router.navigate('/');
+    $rootScope.$digest();
+
+    expect(ctrl.foo).toBe(5);
+  });
+
+
+  it('should allow forms to be attached to the controller', function () {
+    var ctrl;
+    function Controller () {}
+    Controller.prototype.activate = function () {
+      ctrl = this;
+    };
+    registerComponent('form', '<form name="form.foo"></form>', Controller);
+
+    compile('<ng-viewport></ng-viewport>');
+
+    $router.config([
+      { path: '/', component: 'form' }
+    ]);
+
+    $router.navigate('/');
+    $rootScope.$digest();
+
+    expect(ctrl.foo).toBeDefined();
+    expect(ctrl.foo.$valid).toBe(true);
+  });
+
   function registerComponent(name, template, config) {
     if (!template) {
       template = '';

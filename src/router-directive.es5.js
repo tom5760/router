@@ -181,13 +181,14 @@ function ngViewportDirective($animate, $injector, $q, $router) {
         myCtrl.$$router = instruction.router;
         myCtrl.$$template = instruction.template;
         var controllerAs = instruction.controllerAs || instruction.component;
+
+        var newController = instruction.controller;
+        newScope[controllerAs] = newController;
+
         var clone = $transclude(newScope, function(clone) {
           $animate.enter(clone, null, currentElement || $element);
           cleanupLastView();
         });
-
-        var newController = instruction.controller;
-        newScope[controllerAs] = newController;
 
         var result;
         if (currentController && currentController.deactivate) {
